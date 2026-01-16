@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>HR Portal</title></head>
+<body>
+  <h1>Carlsberg Koprivnica – HR Portal</h1>
+  <p>Dostupno samo korisnicima s pravom <code>accounts.change_userprofile</code>.</p>
+
+  <h3>Primjer pregleda profila (top 50)</h3>
+  <table border="1" cellpadding="6">
+    <tr>
+      <th>Korisnik</th><th>Email</th><th>Odjel</th><th>Pozicija</th>
+    </tr>
+    {% for p in profiles %}
+      <tr>
+        <td>{{ p.user.username }}</td>
+        <td>{{ p.user.email }}</td>
+        <td>{{ p.department }}</td>
+        <td>{{ p.job_title }}</td>
+      </tr>
+    {% endfor %}
+  </table>
+
+  <p><a href="/admin/">Nazad na Admin</a></p>
+</body>
+</html>

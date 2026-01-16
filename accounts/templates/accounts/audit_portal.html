@@ -1,0 +1,26 @@
+<!doctype html>
+<html>
+<head><meta charset="utf-8"><title>Audit Portal</title></head>
+<body>
+  <h1>Carlsberg Koprivnica – Audit Portal</h1>
+  <p>Dostupno samo korisnicima s pravom <code>accounts.view_auditlog</code>.</p>
+
+  <h3>Zadnjih 100 promjena</h3>
+  <table border="1" cellpadding="6">
+    <tr>
+      <th>Vrijeme</th><th>Tablica</th><th>Akcija</th><th>PK</th><th>Changed by</th>
+    </tr>
+    {% for a in recent %}
+      <tr>
+        <td>{{ a.occurred_at }}</td>
+        <td>{{ a.table_name }}</td>
+        <td>{{ a.action }}</td>
+        <td>{{ a.row_pk }}</td>
+        <td>{{ a.changed_by }}</td>
+      </tr>
+    {% endfor %}
+  </table>
+
+  <p><a href="/admin/">Nazad na Admin</a></p>
+</body>
+</html>

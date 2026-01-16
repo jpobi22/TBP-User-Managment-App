@@ -18,7 +18,7 @@
 
   <div class="grid">
     <div class="card">
-      <h3>Top tablice (zadnjih N zapisa)</h3>
+      <h3>Top tablice (zadnjih 50 zapisa)</h3>
       <ul>
         {% for row in by_table %}
           <li><b>{{ row.table_name }}</b>: {{ row.cnt }}</li>
