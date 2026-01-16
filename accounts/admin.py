@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
-
+from .models import AuditLog
 from .models import UserProfile
 
 admin.site.site_header = "Carlsberg Koprivnica – IT User Management"
@@ -24,3 +24,22 @@ class UserAdmin(BaseUserAdmin):
 
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)
+
+
+@admin.register(AuditLog)
+class AuditLogAdmin(admin.ModelAdmin):
+    list_display = ("occurred_at", "table_name", "action", "row_pk", "changed_by")
+    list_filter = ("table_name", "action")
+    search_fields = ("row_pk", "changed_by", "table_name")
+    date_hierarchy = "occurred_at"
+    ordering = ("-occurred_at",)
+
+    
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False

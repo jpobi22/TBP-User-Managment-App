@@ -1,0 +1,67 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>Carlsberg Koprivnica – IT Dashboard</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 16px; }
+    table { border-collapse: collapse; width: 100%; margin-top: 12px; }
+    th, td { border: 1px solid #ddd; padding: 8px; font-size: 14px; }
+    th { background: #f5f5f5; text-align: left; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .card { border: 1px solid #ddd; padding: 12px; border-radius: 8px; }
+  </style>
+</head>
+<body>
+  <h1>Carlsberg Koprivnica – IT Dashboard</h1>
+  <p>Pregled zadnjih aktivnosti u bazi (audit log) i osnovna statistika.</p>
+
+  <div class="grid">
+    <div class="card">
+      <h3>Top tablice (zadnjih N zapisa)</h3>
+      <ul>
+        {% for row in by_table %}
+          <li><b>{{ row.table_name }}</b>: {{ row.cnt }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div class="card">
+      <h3>Akcije</h3>
+      <ul>
+        {% for row in by_action %}
+          <li><b>{{ row.action }}</b>: {{ row.cnt }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+
+  <h2>Zadnjih 50 promjena</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Vrijeme</th>
+        <th>Tablica</th>
+        <th>Akcija</th>
+        <th>PK</th>
+        <th>Changed by</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for a in recent %}
+      <tr>
+        <td>{{ a.occurred_at }}</td>
+        <td>{{ a.table_name }}</td>
+        <td>{{ a.action }}</td>
+        <td>{{ a.row_pk }}</td>
+        <td>{{ a.changed_by }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <p style="margin-top:16px;">
+    <a href="/admin/">Nazad na Admin</a>
+  </p>
+</body>
+</html>

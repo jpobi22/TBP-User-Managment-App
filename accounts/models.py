@@ -15,3 +15,21 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return f"Profile: {self.user.username}"
+
+
+class AuditLog(models.Model):
+    occurred_at = models.DateTimeField()
+    table_name = models.TextField()
+    action = models.TextField()
+    row_pk = models.TextField(null=True, blank=True)
+    changed_by = models.TextField(null=True, blank=True)
+    old_data = models.JSONField(null=True, blank=True)
+    new_data = models.JSONField(null=True, blank=True)
+
+    class Meta:
+        managed = False 
+        db_table = "audit_log"
+        ordering = ["-occurred_at"]
+
+    def __str__(self):
+        return f"{self.occurred_at} {self.table_name} {self.action}"
