@@ -4,11 +4,13 @@ from django.contrib.contenttypes.models import ContentType
 from accounts.models import UserProfile
 import random
 
+
 class Command(BaseCommand):
     help = "Seed demo data for Carlsberg Koprivnica user management."
 
     def handle(self, *args, **options):
-     
+
+       
         groups = {
             "IT_ADMIN": "Puni pristup upravljanju korisnicima i sustavom",
             "HR_MANAGER": "Upravljanje metapodacima i osnovnim korisničkim podacima",
@@ -20,18 +22,24 @@ class Command(BaseCommand):
             g, _ = Group.objects.get_or_create(name=gname)
             group_objs[gname] = g
 
-    
         user_ct = ContentType.objects.get(app_label="auth", model="user")
-        user_perms = Permission.objects.filter(content_type=user_ct)
-
-      
         profile_ct = ContentType.objects.get(app_label="accounts", model="userprofile")
+
+        user_perms = Permission.objects.filter(content_type=user_ct)
         profile_perms = Permission.objects.filter(content_type=profile_ct)
 
+        portal_perms = Permission.objects.filter(
+            content_type=profile_ct,
+            codename__in=[
+                "access_it_portal",
+                "access_hr_portal",
+                "access_sales_portal",
+                "access_audit_portal",
+            ],
+        )
 
-        group_objs["IT_ADMIN"].permissions.set(list(user_perms) + list(profile_perms))
+        group_objs["IT_ADMIN"].permissions.set(list(user_perms) + list(profile_perms) + list(portal_perms))
 
-        
         hr_perms = []
         for codename in ["view_user", "change_user"]:
             p = Permission.objects.filter(content_type=user_ct, codename=codename).first()
@@ -43,49 +51,58 @@ class Command(BaseCommand):
             if p:
                 hr_perms.append(p)
 
+        p_hr_portal = Permission.objects.filter(content_type=profile_ct, codename="access_hr_portal").first()
+        if p_hr_portal:
+            hr_perms.append(p_hr_portal)
+
         group_objs["HR_MANAGER"].permissions.set(hr_perms)
 
-        
         ro_perms = []
         for codename in ["view_user"]:
             p = Permission.objects.filter(content_type=user_ct, codename=codename).first()
             if p:
                 ro_perms.append(p)
+
         for codename in ["view_userprofile"]:
             p = Permission.objects.filter(content_type=profile_ct, codename=codename).first()
             if p:
                 ro_perms.append(p)
+
+        p_audit_portal = Permission.objects.filter(content_type=profile_ct, codename="access_audit_portal").first()
+        if p_audit_portal:
+            ro_perms.append(p_audit_portal)
+
         group_objs["READ_ONLY"].permissions.set(ro_perms)
 
        
-        departments = ["IT", "HR", "Sales", "Production", "Logistics"]
-        titles = {
-            "IT": ["IT Support", "System Admin", "IT Manager"],
-            "HR": ["HR Specialist", "HR Manager"],
-            "Sales": ["Sales Rep", "Key Account Manager"],
-            "Production": ["Shift Lead", "Operator"],
-            "Logistics": ["Warehouse Coordinator", "Dispatcher"],
-        }
-
         demo_users = [
-            ("it.admin", "it.admin@carlsberg.local", "IT_ADMIN", "IT"),
-            ("hr.maria", "hr.maria@carlsberg.local", "HR_MANAGER", "HR"),
-            ("ro.auditor", "ro.auditor@carlsberg.local", "READ_ONLY", "IT"),
-        ]
+            
+            ("itguy", "itguy@carlsberg.local", "IT_ADMIN", "IT", "System Admin"),
+            ("itadmin", "itadmin@carlsberg.local", "IT_ADMIN", "IT", "IT Manager"),
+            ("itsupport", "itsupport@carlsberg.local", "READ_ONLY", "IT", "IT Support"),
 
-        for i in range(7):
-            dept = random.choice(departments)
-            uname = f"user{i+1}.{dept.lower()}"
-            email = f"{uname}@carlsberg.local"
-            role = "READ_ONLY" if dept != "IT" else random.choice(["IT_ADMIN", "READ_ONLY"])
-            demo_users.append((uname, email, role, dept))
+            
+            ("hrmaria", "hrmaria@carlsberg.local", "HR_MANAGER", "HR", "HR Manager"),
+            ("hrana", "hrana@carlsberg.local", "READ_ONLY", "HR", "HR Specialist"),
+
+            
+            ("salesivan", "salesivan@carlsberg.local", "READ_ONLY", "Sales", "Sales Rep"),
+            ("salespetra", "salespetra@carlsberg.local", "READ_ONLY", "Sales", "Key Account Manager"),
+
+            
+            ("shiftlead", "shiftlead@carlsberg.local", "READ_ONLY", "Production", "Shift Lead"),
+            ("operatorluka", "operatorluka@carlsberg.local", "READ_ONLY", "Production", "Operator"),
+
+            
+            ("warehousemarko", "warehousemarko@carlsberg.local", "READ_ONLY", "Logistics", "Warehouse Coordinator"),
+        ]
 
         created_count = 0
 
-        for username, email, role, dept in demo_users:
+        for username, email, role, dept, title in demo_users:
             user, created = User.objects.get_or_create(
                 username=username,
-                defaults={"email": email, "is_staff": False}
+                defaults={"email": email, "is_staff": False},
             )
             if created:
                 user.set_password("Carlsberg123!")
@@ -96,7 +113,7 @@ class Command(BaseCommand):
 
             profile, _ = UserProfile.objects.get_or_create(user=user)
             profile.department = dept
-            profile.job_title = random.choice(titles.get(dept, ["Employee"]))
+            profile.job_title = title
             profile.is_active_employee = True
             profile.metadata = {
                 "company": "Carlsberg Koprivnica",
