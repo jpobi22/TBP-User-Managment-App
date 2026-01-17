@@ -1,16 +1,25 @@
-<!doctype html>
-<html>
-<head><meta charset="utf-8"><title>IT Portal</title></head>
-<body>
-  <h1>Carlsberg Koprivnica – IT Portal</h1>
-  <p>Ova stranica je dostupna samo korisnicima s pravom <code>auth.view_user</code>.</p>
+{% extends "accounts/base.html" %}
 
-  <ul>
-    <li><a href="/admin/auth/user/">Upravljanje korisnicima (Admin)</a></li>
-    <li><a href="/admin/auth/group/">Upravljanje ulogama/grupama (Admin)</a></li>
-    <li><a href="/audit/">Audit Portal</a></li>
-  </ul>
+{% block title %}IT Portal{% endblock %}
 
-  <p><a href="/admin/">Nazad na Admin</a></p>
-</body>
-</html>
+{% block content %}
+<h1>Carlsberg Koprivnica – IT Portal</h1>
+<p>Ova stranica je dostupna samo korisnicima s pravom <code>accounts.access_it_portal</code>.</p>
+
+<ul>
+    {% if user.is_superuser %}
+        <li><a href="/admin/auth/user/">Upravljanje korisnicima (Admin)</a></li>
+        <li><a href="/admin/auth/group/">Upravljanje ulogama/grupama (Admin)</a></li>
+    {% endif %}
+
+    {% if perms.accounts.access_audit_portal %}
+        <li><a href="/audit/">Audit Portal</a></li>
+    {% endif %}
+
+    {% if perms.accounts.access_it_portal %}
+        <li><a href="/it-dashboard/">IT Dashboard</a></li>
+    {% endif %}
+</ul>
+
+<p><a href="/">Nazad na početnu</a></p>
+{% endblock %}

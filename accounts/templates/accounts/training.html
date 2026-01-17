@@ -1,60 +1,32 @@
-<!doctype html>
-<html lang="hr">
-<head>
-    <meta charset="utf-8">
-    <title>Carlsberg Koprivnica – Training</title>
-    <style>
-        body { font-family: Arial, sans-serif; padding: 40px; background: #eef2f7; }
-        .box {
-            max-width: 700px;
-            margin: auto;
-            background: white;
-            padding: 24px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        h1 { color: #b30000; }
-        .info {
-            background: #f5f5f5;
-            padding: 16px;
-            border-left: 4px solid #b30000;
-            margin-top: 16px;
-        }
-        a { color: #003a8f; text-decoration: none; }
-    </style>
-</head>
-<body>
-<div class="box">
-    <h1>Training – pristup ograničen</h1>
+{% extends "accounts/base.html" %}
 
+{% block title %}Training{% endblock %}
+
+{% block content %}
+<h1 style="color:#b30000;">Training – pristup ograničen</h1>
+
+<p>Pozdrav <b>{{ user.username }}</b>,</p>
+
+<div style="background:#f5f5f5; padding:16px; border-left:4px solid #b30000; margin-top:16px;">
+    <p>Trenutno ste na stranici za <b>ROOKIE</b> uloge.</p>
     <p>
-        Pozdrav <b>{{ user.username }}</b>,
-    </p>
-
-    <div class="info">
-        <p>
-            Trenutno ste na stranici za <b>ROOKIE</b> uloge.
-        </p>
-        <p>
-            Prije pristupa internim sustavima Carlsberg Koprivnica morate završiti
-            obavezni trening za sigurnost i korištenje IT sustava.
-        </p>
-    </div>
-
-    <h3>Što trebate napraviti:</h3>
-    <ul>
-        <li>✔ Završiti IT onboarding</li>
-        <li>✔ Pročitati sigurnosne smjernice</li>
-        <li>✔ Proći edukaciju o radu s korisničkim podacima</li>
-    </ul>
-
-    <p>
-        Nakon što HR ili IT odjel potvrdi vaš status, dobit ćete puni pristup.
-    </p>
-
-    <p style="margin-top:20px;">
-        <a href="/">Nazad na početnu</a>
+        Prije pristupa internim sustavima Carlsberg Koprivnica morate završiti obavezni
+        trening za sigurnost i korištenje IT sustava.
     </p>
 </div>
-</body>
-</html>
+
+<h3>Što trebate napraviti:</h3>
+<ul>
+    <li>✔ Završiti IT onboarding</li>
+    <li>✔ Pročitati sigurnosne smjernice</li>
+    <li>✔ Proći edukaciju o radu s korisničkim podacima</li>
+</ul>
+
+<p>
+    Nakon što HR ili IT odjel potvrdi vaš status, dobit ćete puni pristup.
+</p>
+
+<p style="margin-top:20px;">
+    <a href="/">Nazad na početnu</a>
+</p>
+{% endblock %}
