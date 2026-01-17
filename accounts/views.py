@@ -5,9 +5,11 @@ from django.shortcuts import render
 from django.db.models import Count
 from .models import AuditLog
 from .models import AuditLog, UserProfile
+from django.contrib.auth import logout
+from django.shortcuts import redirect
 
-
-@staff_member_required
+@login_required
+@permission_required("accounts.access_it_portal", raise_exception=True)
 def it_dashboard(request):
     recent = AuditLog.objects.all()[:50]
 
@@ -51,3 +53,19 @@ def sales_portal(request):
 def audit_portal(request):
     recent = AuditLog.objects.all()[:100]
     return render(request, "accounts/audit_portal.html", {"recent": recent})
+
+def index(request):
+    is_rookie = (
+        request.user.is_authenticated
+        and request.user.groups.filter(name__iexact="ROOKIE").exists()
+    )
+    return render(request, "accounts/index.html", {"is_rookie": is_rookie})
+
+@login_required
+def training(request):
+    return render(request, "accounts/training.html")
+
+
+def logout_view(request):
+    logout(request)
+    return redirect("/")

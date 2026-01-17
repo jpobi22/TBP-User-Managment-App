@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="hr">
+<head>
+    <meta charset="utf-8">
+    <title>Carlsberg Koprivnica – Početna</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 40px; background: #f9f9f9; }
+        .box {
+            max-width: 700px;
+            margin: auto;
+            background: white;
+            padding: 24px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 { color: #003a8f; }
+        ul { margin-top: 16px; }
+        li { margin: 6px 0; }
+        .note { margin-top: 20px; color: #666; font-size: 14px; }
+        a { color: #003a8f; text-decoration: none; }
+    </style>
+</head>
+<body>
+<div class="box">
+    <h1>Carlsberg Koprivnica</h1>
+    <h2>Interni sustav za korisnike</h2>
+
+    {% if user.is_authenticated %}
+        <p>
+            Prijavljeni ste kao: <b>{{ user.username }}</b>
+        </p>
+
+        <h3>Dostupne stranice:</h3>
+        <ul>
+            {% if perms.accounts.access_it_portal %}
+                <li><a href="/it/">IT portal</a></li>
+            {% endif %}
+
+            {% if perms.accounts.access_hr_portal %}
+                <li><a href="/hr/">HR portal</a></li>
+            {% endif %}
+
+            {% if perms.accounts.access_sales_portal %}
+                <li><a href="/sales/">Sales portal</a></li>
+            {% endif %}
+
+            {% if perms.accounts.access_audit_portal %}
+                <li><a href="/audit/">Audit portal</a></li>
+            {% endif %}
+
+            {% if user.is_superuser %}
+                <li><a href="/admin/">Admin (superuser)</a></li>
+            {% endif %}
+            {% if is_rookie %}
+                <li><a href="/training">Training</a></li>
+            {% endif %}
+        </ul>
+
+        <p class="note">
+            Ako nemate pristup nekoj stranici, sustav vas automatski preusmjerava.
+        </p>
+
+        <p style="margin-top:20px;">
+           <a href="/logout/">Odjava</a>
+
+        </p>
+    {% else %}
+        <p>Niste prijavljeni.</p>
+        <a href="/admin/login/">Prijava</a>
+    {% endif %}
+</div>
+</body>
+</html>
