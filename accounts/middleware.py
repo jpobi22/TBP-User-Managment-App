@@ -1,11 +1,7 @@
 from django.db import connection, transaction
 
 class PgChangedByMiddleware:
-    """
-    Postavlja app.changed_by u PostgreSQL sesiji lokalno za trajanje transakcije requesta.
-    Koristi set_config(..., true) što je ekvivalent SET LOCAL.
-    """
-
+   
     def __init__(self, get_response):
         self.get_response = get_response
 

@@ -1,20 +1,13 @@
 @echo off
 setlocal enabledelayedexpansion
 
-REM ============================
-REM  Carlsberg Koprivnica - Setup
-REM ============================
-
-REM ---- CONFIG (promijeni po potrebi) ----
 set DB_NAME=PROJEKT
 set DB_HOST=localhost
 set DB_PORT=5432
 set DB_ADMIN_USER=postgres
 
-REM OVO je password od postgres usera (tvoj je trenutno 123)
 set DB_ADMIN_PASSWORD=123
 
-REM Opcionalno: ako imas seed komandu, postavi na 1
 set RUN_SEED=1
 set SEED_COMMAND=seed_carlsberg
 

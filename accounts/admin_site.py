@@ -12,12 +12,6 @@ class CarlsbergAdminSite(AdminSite):
         return is_it_or_superuser(user)
 
     def login(self, request, extra_context=None):
-        """
-        Ako netko pokuša na /admin, a nema prava:
-        - READ_ONLY -> /
-        - ROOKIE -> /training
-        - ostali -> /
-        """
         user = request.user
         if user.is_authenticated and not is_it_or_superuser(user):
             if is_rookie(user):
